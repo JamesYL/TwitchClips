@@ -93,7 +93,7 @@ const Home = () => {
   return (
     <>
       <div className={classes.bar}>
-        <Navbar transparent />
+        <Navbar transparent disableSearch />
       </div>
       <Container maxWidth={false} className={classes.root}>
         <div className={classes.background} />

@@ -3,7 +3,9 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
+import Badge from "@material-ui/core/Badge";
 import BookmarksIcon from "@material-ui/icons/Bookmarks";
+import SearchBar from "./SearchBar";
 import { Tooltip } from "@material-ui/core";
 import { useHistory } from "react-router";
 import React from "react";
@@ -45,8 +47,9 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 interface NavProp {
   transparent?: boolean;
+  disableSearch?: boolean;
 }
-export default function Navbar({ transparent }: NavProp) {
+export default function Navbar({ transparent, disableSearch }: NavProp) {
   const history = useHistory();
   const classes = useStyles({ transparent });
   const clickBookmark = () => {
@@ -63,14 +66,21 @@ export default function Navbar({ transparent }: NavProp) {
               Streamalytics
             </Link>
           </Typography>
+          {!disableSearch && (
+            <div className={classes.search}>
+              <SearchBar />
+            </div>
+          )}
           <div className={classes.grow} />
           <Tooltip title="Saved vods" aria-label="saved vods">
             <IconButton
-              aria-label="last viewed vods"
+              aria-label="show saved vod analytics"
               color="inherit"
               onClick={clickBookmark}
             >
-              <BookmarksIcon />
+              <Badge color="secondary">
+                <BookmarksIcon />
+              </Badge>
             </IconButton>
           </Tooltip>
         </Toolbar>
