@@ -14,6 +14,7 @@ import { useParams } from "react-router-dom";
 import { downloadClip, getVodInfo, VodInfo } from "../../services/twitch";
 import { useDimensions } from "../../util/util";
 import Navbar from "../util/Navbar";
+import Notification from "../util/Notification";
 import ErrorVodPage from "./ErrorVodPage";
 const useStyles = makeStyles((theme: Theme) => {
   return {
@@ -73,6 +74,7 @@ const AnalyzeVod = () => {
   const [saveTimeClicked, setSaveTimeClicked] = React.useState(false);
   const [vodName, setVodName] = React.useState("");
   const [clipName, setClipName] = React.useState<null | string>(null);
+  const [isErr, setIsErr] = React.useState(false);
 
   React.useEffect(() => {
     getVodInfo(vodID)
@@ -91,7 +93,9 @@ const AnalyzeVod = () => {
       values[1],
       clipName === null ? `${vodID}_${values[0]}s_to_${values[1]}s` : clipName,
       ""
-    );
+    ).catch(() => {
+      setIsErr(true);
+    });
   };
   return (
     <>
@@ -191,6 +195,11 @@ const AnalyzeVod = () => {
           </>
         )}
       </Container>
+      <Notification
+        open={isErr}
+        setOpen={setIsErr}
+        message="Could not get clip. Is the output folder valid?"
+      />
     </>
   );
 };

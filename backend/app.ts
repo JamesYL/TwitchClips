@@ -37,26 +37,34 @@ app.get("/vodqualities/:id", (req, res) => {
       res.status(400).end();
     });
 });
-app.post("/voddownload", (req, res) => {
+app.post("/voddownload", async (req, res) => {
   const data = req.body as {
     quality: string;
     id: string;
     times: { startTime: number; endTime: number; filename: string }[];
     outputFolder?: string;
   };
-
-  for (let i = 0; i < data.times.length; i++) {
-    getVideo(
-      data.id,
-      data.times[i].startTime,
-      data.times[i].endTime,
-      data.quality,
-      data.outputFolder ? data.outputFolder : electron.app.getPath("downloads"),
-      data.times[i].filename
-    );
+  try {
+    const vids = [];
+    for (let i = 0; i < data.times.length; i++) {
+      vids.push(
+        getVideo(
+          data.id,
+          data.times[i].startTime,
+          data.times[i].endTime,
+          data.quality,
+          data.outputFolder
+            ? data.outputFolder
+            : electron.app.getPath("downloads"),
+          data.times[i].filename
+        )
+      );
+    }
+    await Promise.all(vids);
+    res.status(200).end();
+  } catch (err) {
+    res.status(400).json({ message: "Could not get video" });
   }
-
-  res.status(200).end();
 });
 app.get("/output", (_, res) => {
   electron.dialog

@@ -36,7 +36,7 @@ export const downloadClip = async (
   filename: string,
   quality = ""
 ) => {
-  axios.post(`/voddownload`, {
+  return axios.post(`/voddownload`, {
     quality,
     id,
     times: [{ startTime, endTime, filename }],
