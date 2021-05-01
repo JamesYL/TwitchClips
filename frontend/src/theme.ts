@@ -5,7 +5,7 @@ const theme = createMuiTheme({
       main: "#7015c2",
     },
     secondary: {
-      main: "#25e220",
+      main: "#9962C9",
     },
     background: { default: "azure", paper: "azure" },
   },
