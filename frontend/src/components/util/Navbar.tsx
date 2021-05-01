@@ -5,6 +5,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import Badge from "@material-ui/core/Badge";
 import BookmarksIcon from "@material-ui/icons/Bookmarks";
+import SettingsIcon from "@material-ui/icons/Settings";
 import SearchBar from "./SearchBar";
 import { Tooltip } from "@material-ui/core";
 import { useHistory } from "react-router";
@@ -56,6 +57,10 @@ export default function Navbar({ transparent, disableSearch }: NavProp) {
     history.push(`/bookmarks`);
     history.go(0);
   };
+  const clickSettings = () => {
+    history.push(`/settings`);
+    history.go(0);
+  };
 
   return (
     <div className={classes.root}>
@@ -72,6 +77,17 @@ export default function Navbar({ transparent, disableSearch }: NavProp) {
             </div>
           )}
           <div className={classes.grow} />
+          <Tooltip title="Settings" aria-label="settings">
+            <IconButton
+              aria-label="show settings"
+              color="inherit"
+              onClick={clickSettings}
+            >
+              <Badge color="secondary">
+                <SettingsIcon />
+              </Badge>
+            </IconButton>
+          </Tooltip>
           <Tooltip title="Saved VODs and clips" aria-label="saved vods">
             <IconButton
               aria-label="show saved vods and clips"

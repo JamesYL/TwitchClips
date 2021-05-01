@@ -1,3 +1,4 @@
+import { getOutputPath } from "./../storage/storage";
 import axios from "axios";
 
 export type ImageURL = string;
@@ -39,5 +40,6 @@ export const downloadClip = async (
     quality,
     id,
     times: [{ startTime, endTime, filename }],
+    outputFolder: getOutputPath(),
   });
 };

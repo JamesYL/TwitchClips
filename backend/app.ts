@@ -38,8 +38,27 @@ app.get("/vodqualities/:id", (req, res) => {
     });
 });
 app.post("/voddownload", (req, res) => {
-  // data: {quality: ???, id: ??? times: [{startTime, endTime, filename}]}
-  const data = req.body;
+  const data = req.body as {
+    quality: string;
+    id: string;
+    times: { startTime: number; endTime: number; filename: string }[];
+    outputFolder?: string;
+  };
+
+  for (let i = 0; i < data.times.length; i++) {
+    getVideo(
+      data.id,
+      data.times[i].startTime,
+      data.times[i].endTime,
+      data.quality,
+      data.outputFolder ? data.outputFolder : electron.app.getPath("downloads"),
+      data.times[i].filename
+    );
+  }
+
+  res.status(200).end();
+});
+app.get("/output", (_, res) => {
   electron.dialog
     .showOpenDialog({
       properties: ["openDirectory"],
@@ -47,19 +66,14 @@ app.post("/voddownload", (req, res) => {
     })
     .then((value) => {
       if (!value.canceled) {
-        for (let i = 0; i < data.times.length; i++) {
-          getVideo(
-            data.id,
-            data.times[i].startTime,
-            data.times[i].endTime,
-            data.quality,
-            value.filePaths[0],
-            data.times[i].filename
-          );
-        }
+        res.json({ path: value.filePaths });
+      } else {
+        res.status(404).json({ message: "Cancelled dialog" });
       }
+    })
+    .catch(() => {
+      res.status(500).json({ message: "Internal error" });
     });
-  res.status(200).end();
 });
 export default (): void => {
   app.listen(PORT, () => console.log("Server is ready on " + PORT));
