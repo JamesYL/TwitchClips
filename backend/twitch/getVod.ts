@@ -215,8 +215,8 @@ export const getVideo = async (
     await Promise.all(promises);
     // Getting the final video file name
     const videoFileName = fileName
-      ? `${outputPath}\\${fileName}`
-      : `${outputPath}\\${crypto.randomBytes(20).toString("hex")}.mp4`;
+      ? `"${outputPath}\\${fileName}.mp4"`
+      : `"${outputPath}\\${crypto.randomBytes(20).toString("hex")}.mp4"`;
     await combineVideoClips(
       path,
       startCropTime,

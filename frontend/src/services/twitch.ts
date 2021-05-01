@@ -28,3 +28,16 @@ export interface VodInfo {
 export const getVodInfo = async (id: string | number) => {
   return axios.get<VodInfo>(`/vodinfo/${id}`);
 };
+export const downloadClip = async (
+  id: string | number,
+  startTime: number,
+  endTime: number,
+  filename: string,
+  quality = ""
+) => {
+  axios.post(`/voddownload`, {
+    quality,
+    id,
+    times: [{ startTime, endTime, filename }],
+  });
+};

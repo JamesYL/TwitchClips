@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useParams } from "react-router-dom";
-import { getVodInfo, VodInfo } from "../../services/twitch";
+import { downloadClip, getVodInfo, VodInfo } from "../../services/twitch";
 import { useDimensions } from "../../util/util";
 import Navbar from "../util/Navbar";
 import ErrorVodPage from "./ErrorVodPage";
@@ -84,6 +84,15 @@ const AnalyzeVod = () => {
         setVodInfo(null);
       });
   }, [vodID]);
+  const handleDownload = () => {
+    downloadClip(
+      vodID,
+      values[0],
+      values[1],
+      clipName === null ? `${vodID}_${values[0]}s_to_${values[1]}s` : clipName,
+      ""
+    );
+  };
   return (
     <>
       <Navbar />
@@ -150,7 +159,11 @@ const AnalyzeVod = () => {
                 </Grid>
               </Grid>
               <div className={classes.actions}>
-                <Button variant="contained" color="primary">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleDownload}
+                >
                   Download Clip
                 </Button>
                 <Button
