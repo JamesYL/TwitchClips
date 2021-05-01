@@ -72,9 +72,9 @@ export default function Navbar({ transparent, disableSearch }: NavProp) {
             </div>
           )}
           <div className={classes.grow} />
-          <Tooltip title="Saved vods" aria-label="saved vods">
+          <Tooltip title="Saved VODs and clips" aria-label="saved vods">
             <IconButton
-              aria-label="show saved vod analytics"
+              aria-label="show saved vods and clips"
               color="inherit"
               onClick={clickBookmark}
             >
