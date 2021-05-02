@@ -12,6 +12,11 @@ import {
 import React from "react";
 import { useParams } from "react-router-dom";
 import { downloadClip, getVodInfo, VodInfo } from "../../services/twitch";
+import {
+  addClip,
+  getSingleCollection,
+  setCollectionName,
+} from "../../storage/storage";
 import { useDimensions } from "../../util/util";
 import Navbar from "../util/Navbar";
 import Notification from "../util/Notification";
@@ -33,6 +38,7 @@ const useStyles = makeStyles((theme: Theme) => {
       marginTop: theme.spacing(1),
       display: "flex",
       justifyContent: "space-between",
+      marginBottom: theme.spacing(3),
     },
     textfields: {
       paddingTop: theme.spacing(2),
@@ -80,7 +86,13 @@ const AnalyzeVod = () => {
     getVodInfo(vodID)
       .then(({ data }) => {
         setVodInfo(data);
-        setVodName(data.title);
+        const collection = getSingleCollection(vodID);
+        if (collection) {
+          setVodName(collection.name);
+          setVodButtonClicked(true);
+        } else {
+          setVodName(data.title);
+        }
       })
       .catch(() => {
         setVodInfo(null);
@@ -138,7 +150,7 @@ const AnalyzeVod = () => {
                 <Grid item xs={12} sm={10} md={8} lg={7}>
                   <TextField
                     value={vodName}
-                    label="Collection name"
+                    label="VOD name"
                     onChange={(event) => {
                       setVodName(event.target.value);
                       setVodButtonClicked(false);
@@ -175,6 +187,14 @@ const AnalyzeVod = () => {
                   color="secondary"
                   onClick={() => {
                     setSaveTimeClicked(true);
+                    addClip(vodID, {
+                      name: clipName
+                        ? clipName
+                        : `${vodID}_${values[0]}s_to_${values[1]}s`,
+                      createdAt: new Date().toString(),
+                      startTime: values[0],
+                      endTime: values[1],
+                    });
                   }}
                   disabled={saveTimeClicked}
                 >
@@ -184,7 +204,10 @@ const AnalyzeVod = () => {
                   variant="contained"
                   color="secondary"
                   onClick={() => {
-                    setVodButtonClicked(true);
+                    if (vodName) {
+                      setCollectionName(vodID, vodName);
+                      setVodButtonClicked(true);
+                    }
                   }}
                   disabled={vodButtonClicked}
                 >

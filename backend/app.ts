@@ -83,6 +83,11 @@ app.get("/output", (_, res) => {
       res.status(500).json({ message: "Internal error" });
     });
 });
+app.post("/openexternal", (req, res) => {
+  // req.body as {url: string};
+  electron.shell.openExternal(req.body.url);
+  res.end();
+});
 export default (): void => {
   app.listen(PORT, () => console.log("Server is ready on " + PORT));
 };

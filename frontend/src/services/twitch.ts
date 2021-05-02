@@ -43,3 +43,6 @@ export const downloadClip = async (
     outputFolder: getOutputPath(),
   });
 };
+export const getExternal = async (url: string) => {
+  return axios.post(`/openexternal`, { url });
+};
