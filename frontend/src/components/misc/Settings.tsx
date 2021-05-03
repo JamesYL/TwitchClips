@@ -1,22 +1,45 @@
-import { Button, Typography } from "@material-ui/core";
+import {
+  Button,
+  Typography,
+  Container,
+  makeStyles,
+  Theme,
+} from "@material-ui/core";
 import { getOutputPath, setOutputPath } from "../../storage/storage";
 import Navbar from "../util/Navbar";
 import React from "react";
+const useStyles = makeStyles((theme: Theme) => {
+  return {
+    outputText: {
+      marginBottom: theme.spacing(1),
+    },
+    container: {
+      marginTop: theme.spacing(2),
+    },
+  };
+});
 const Settings = () => {
+  const classes = useStyles();
+
   const [path, setPath] = React.useState<null | string>(getOutputPath());
   return (
-    <div>
+    <>
       <Navbar />
-      <Typography variant="body1"> Set Output Folder</Typography>
-      <Button
-        variant="contained"
-        onClick={() => {
-          setOutputPath().then((item) => setPath(item));
-        }}
-      >
-        {path ? path : "Downloads"}
-      </Button>
-    </div>
+      <Container className={classes.container}>
+        <Typography variant="body1" className={classes.outputText}>
+          Current Output Folder: <b>{path ? path : "Downloads"}</b>
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            setOutputPath().then((item) => setPath(item));
+          }}
+        >
+          Select Output Folder
+        </Button>
+      </Container>
+    </>
   );
 };
 export default Settings;
