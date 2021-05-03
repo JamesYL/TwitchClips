@@ -1,8 +1,12 @@
 import {
   Button,
   Container,
+  FormControl,
   Grid,
+  InputLabel,
   makeStyles,
+  MenuItem,
+  Select,
   Slider,
   TextField,
   Theme,
@@ -11,7 +15,12 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useParams } from "react-router-dom";
-import { downloadClip, getVodInfo, VodInfo } from "../../services/twitch";
+import {
+  downloadClip,
+  getQualities,
+  getVodInfo,
+  VodInfo,
+} from "../../services/twitch";
 import {
   addClip,
   getSingleCollection,
@@ -43,6 +52,9 @@ const useStyles = makeStyles((theme: Theme) => {
     textfields: {
       paddingTop: theme.spacing(2),
       paddingBottom: theme.spacing(2),
+    },
+    quality: {
+      width: 120,
     },
   };
 });
@@ -81,6 +93,8 @@ const AnalyzeVod = () => {
   const [vodName, setVodName] = React.useState("");
   const [clipName, setClipName] = React.useState<null | string>(null);
   const [isErr, setIsErr] = React.useState(false);
+  const [qualities, setQualities] = React.useState<string[]>([]);
+  const [selectedQuality, setSelectedQuality] = React.useState("");
 
   React.useEffect(() => {
     getVodInfo(vodID)
@@ -93,6 +107,10 @@ const AnalyzeVod = () => {
         } else {
           setVodName(data.title);
         }
+        return getQualities(vodID);
+      })
+      .then(({ data }) => {
+        setQualities(data);
       })
       .catch(() => {
         setVodInfo(null);
@@ -104,7 +122,7 @@ const AnalyzeVod = () => {
       values[0],
       values[1],
       clipName === null ? `${vodID}_${values[0]}s_to_${values[1]}s` : clipName,
-      ""
+      selectedQuality
     ).catch(() => {
       setIsErr(true);
     });
@@ -173,6 +191,25 @@ const AnalyzeVod = () => {
                     }}
                   />
                 </Grid>
+                <Grid item xs={12} sm={10} md={8} lg={7}>
+                  <FormControl className={classes.quality}>
+                    <InputLabel id="select-quality">Select Quality</InputLabel>
+                    <Select
+                      labelId="select-quality"
+                      value={selectedQuality}
+                      onChange={(e) =>
+                        setSelectedQuality(e.target.value as string)
+                      }
+                      fullWidth
+                    >
+                      {qualities.map((item) => (
+                        <MenuItem value={item} key={item}>
+                          {item}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
               </Grid>
               <div className={classes.actions}>
                 <Button
@@ -194,11 +231,12 @@ const AnalyzeVod = () => {
                       createdAt: new Date().toString(),
                       startTime: values[0],
                       endTime: values[1],
+                      quality: selectedQuality,
                     });
                   }}
                   disabled={saveTimeClicked}
                 >
-                  {saveTimeClicked ? "Clip Saved" : "Save Time Selected"}
+                  {saveTimeClicked ? "Clip Saved" : "Save Clip"}
                 </Button>
                 <Button
                   variant="contained"

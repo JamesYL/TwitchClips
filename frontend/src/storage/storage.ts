@@ -18,6 +18,7 @@ export interface Clip {
   createdAt: string;
   startTime: number;
   endTime: number;
+  quality: string;
 }
 export interface Collections {
   [id: string]: {

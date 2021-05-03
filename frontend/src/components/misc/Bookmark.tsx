@@ -35,7 +35,7 @@ const Bookmark = () => {
                   </Typography>
                   <List>
                     {curr.clips.map(
-                      ({ name, createdAt, startTime, endTime }, i) => {
+                      ({ name, createdAt, startTime, endTime, quality }, i) => {
                         const date = new Date(createdAt);
                         return (
                           <ListItem
@@ -47,7 +47,9 @@ const Bookmark = () => {
                             }}
                           >
                             <ListItemText
-                              primary={`${name} (${endTime - startTime}s)`}
+                              primary={`${name} (${
+                                endTime - startTime
+                              }s long at ${quality})`}
                               secondary={`Created at ${date.toLocaleTimeString()} on ${date.toLocaleDateString()}`}
                             />
                             <ListItemSecondaryAction>

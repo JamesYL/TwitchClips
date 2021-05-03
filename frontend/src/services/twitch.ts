@@ -46,3 +46,6 @@ export const downloadClip = async (
 export const getExternal = async (url: string) => {
   return axios.post(`/openexternal`, { url });
 };
+export const getQualities = async (id: string | number) => {
+  return axios.get<string[]>(`/vodqualities/${id}`);
+};
