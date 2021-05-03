@@ -3,6 +3,7 @@ import fs from "fs";
 import tmp from "tmp";
 import { exec } from "child_process";
 import crypto from "crypto";
+import Observable from "../util/Observable";
 const config = { headers: { "Client-ID": "kimne78kx3ncx6brgo4mv6wki5h1ko" } };
 export type ImageURL = string;
 export type DateString = string;
@@ -196,7 +197,8 @@ export const getVideo = async (
   endTime: number,
   quality = "",
   outputPath: string,
-  fileName: string | null
+  fileName: string | null,
+  observ?: Observable
 ): Promise<string> => {
   const { playlistData, baseUrl } = await getPlaylist(videoId, quality);
   const playlistInfo = getPlaylistInfo(startTime, endTime, playlistData);
@@ -207,10 +209,15 @@ export const getVideo = async (
 
     const promises = [];
     for (const item of info) {
-      const { name, fileIndex } = item;
-      promises.push(
-        getVideoClip(`${baseUrl}/${name}`, `${path}/${fileIndex}.ts`)
+      const { name, fileIndex, partLength } = item;
+      const clip = getVideoClip(
+        `${baseUrl}/${name}`,
+        `${path}/${fileIndex}.ts`
       );
+      promises.push(clip);
+      clip.then(() => {
+        observ.updateProgress(partLength);
+      });
     }
     await Promise.all(promises);
     // Getting the final video file name

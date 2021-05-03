@@ -17,6 +17,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import {
   downloadClip,
+  getDownloadProgress,
   getQualities,
   getVodInfo,
   VodInfo,
@@ -27,6 +28,7 @@ import {
   setCollectionName,
 } from "../../storage/storage";
 import { useDimensions } from "../../util/util";
+import CircularProgressWithLabel from "../util/CircularProgressWithLabel";
 import Navbar from "../util/Navbar";
 import Notification from "../util/Notification";
 import ErrorVodPage from "./ErrorVodPage";
@@ -55,6 +57,10 @@ const useStyles = makeStyles((theme: Theme) => {
     },
     quality: {
       width: 120,
+    },
+    downloadProg: {
+      marginLeft: theme.spacing(2),
+      paddingBottom: theme.spacing(5),
     },
   };
 });
@@ -95,6 +101,7 @@ const AnalyzeVod = () => {
   const [isErr, setIsErr] = React.useState(false);
   const [qualities, setQualities] = React.useState<string[]>([]);
   const [selectedQuality, setSelectedQuality] = React.useState("");
+  const [progress, setProgress] = React.useState<[string, number][]>([]);
 
   React.useEffect(() => {
     getVodInfo(vodID)
@@ -116,6 +123,16 @@ const AnalyzeVod = () => {
       .catch(() => {
         setVodInfo(null);
       });
+    const interval = setInterval(() => {
+      getDownloadProgress(vodID).then(({ data }) => {
+        const cpy: [string, number][] = [];
+        for (const item of data) {
+          cpy.push([item.downloadID, item.progress]);
+        }
+        setProgress(cpy);
+      });
+    }, 1000);
+    return () => clearInterval(interval);
   }, [vodID]);
   const handleDownload = () => {
     downloadClip(
@@ -124,9 +141,13 @@ const AnalyzeVod = () => {
       values[1],
       clipName === null ? `${vodID}_${values[0]}s_to_${values[1]}s` : clipName,
       selectedQuality
-    ).catch(() => {
-      setIsErr(true);
-    });
+    )
+      .then(({ data }) => {
+        setProgress([...progress, [data.downloadID, 0]]);
+      })
+      .catch(() => {
+        setIsErr(true);
+      });
   };
   return (
     <>
@@ -253,6 +274,16 @@ const AnalyzeVod = () => {
                   {vodButtonClicked ? "VOD Saved" : "Save VOD"}
                 </Button>
               </div>
+            </div>
+            <div className={classes.downloadProg}>
+              {progress.length > 0 && (
+                <Typography variant="body1" color="primary">
+                  Ongoing Downloads
+                </Typography>
+              )}
+              {progress.map((item) => {
+                return <CircularProgressWithLabel value={item[1] * 100} />;
+              })}
             </div>
           </>
         )}

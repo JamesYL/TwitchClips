@@ -25,9 +25,22 @@ export interface VodInfo {
     _id: string;
   };
 }
-
+export interface DownloadProgress {
+  downloadID: string;
+  progress: number;
+}
 export const getVodInfo = async (id: string | number) => {
   return axios.get<VodInfo>(`/vodinfo/${id}`);
+};
+export const getExternal = async (url: string) => {
+  return axios.post(`/openexternal`, { url });
+};
+export const getQualities = async (id: string | number) => {
+  return axios.get<string[]>(`/vodqualities/${id}`);
+};
+
+export const getDownloadProgress = async (vodID: string | number) => {
+  return axios.get<DownloadProgress[]>(`/voddownload/${vodID}`);
 };
 export const downloadClip = async (
   id: string | number,
@@ -36,16 +49,10 @@ export const downloadClip = async (
   filename: string,
   quality = ""
 ) => {
-  return axios.post(`/voddownload`, {
+  return axios.post<{ downloadID: string }>(`/voddownload`, {
     quality,
     id,
     times: [{ startTime, endTime, filename }],
     outputFolder: getOutputPath(),
   });
-};
-export const getExternal = async (url: string) => {
-  return axios.post(`/openexternal`, { url });
-};
-export const getQualities = async (id: string | number) => {
-  return axios.get<string[]>(`/vodqualities/${id}`);
 };
