@@ -111,6 +111,7 @@ const AnalyzeVod = () => {
       })
       .then(({ data }) => {
         setQualities(data);
+        setSelectedQuality(data[0]);
       })
       .catch(() => {
         setVodInfo(null);
