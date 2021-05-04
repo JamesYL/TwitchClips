@@ -13,13 +13,13 @@ if (process.env.NODE_ENV === "development") {
   app.use(cors());
 } else {
   console.log("Production build...");
-  app.use(express.static("build"));
+  app.use(express.static("backend/build/build"));
+  app.get("*", function (_, res) {
+    res.sendFile(path.join(__dirname, "build", "index.html"));
+  });
 }
-app.use(express.json());
 
-app.get("/", (_, res) => {
-  res.sendFile(path.join(__dirname + "/build/index.html"));
-});
+app.use(express.json());
 
 app.get("/vodinfo/:id", (req, res) => {
   getVodInfo(req.params.id)
@@ -135,6 +135,7 @@ app.post("/openexternal", (req, res) => {
   electron.shell.openExternal(req.body.url);
   res.end();
 });
+
 export default (): void => {
   app.listen(PORT, () => console.log("Server is ready on " + PORT));
 };

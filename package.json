@@ -1,19 +1,44 @@
 {
-  "name": "twitchclips",
+  "name": "streamalytics",
   "version": "1.0.0",
-  "description": "",
-  "main": "./backend_build/main.js",
+  "description": "Download and save clips from Twitch VODs",
+  "main": "./backend/build/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "cross-env NODE_ENV=production electron .",
-    "build": "tsc && rimraf build && cd ./frontend && npm run build && copyfiles build/**/* ../ && rimraf build",
+    "build": "rimraf ./backend/build && tsc && cd ./frontend && npm run build && copyfiles build/**/* ../backend/build",
     "front": "cd ./frontend && npm start",
     "dev": "tsc && cross-env NODE_ENV=development electron .",
     "lint": "eslint --ext .ts ./backend",
     "make": "npm install && cd ./frontend && npm install"
   },
-  "author": "",
+  "author": "James Lee",
   "license": "ISC",
+  "build": {
+    "appId": "info.streamalytics.desktop.app",
+    "productName": "Streamalytics",
+    "directories": {
+      "output": "./release",
+      "app": "./"
+    },
+    "files": [
+      "./package.json",
+      "./node_modules/",
+      "./backend_build",
+      "./build"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "mac": {
+      "category": "public.app-category.graphics-design"
+    },
+    "linux": {
+      "category": "Graphics"
+    }
+  },
   "dependencies": {
     "axios": "^0.21.1",
     "cors": "^2.8.5",
