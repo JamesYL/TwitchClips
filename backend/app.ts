@@ -8,17 +8,6 @@ import path from "path";
 import crypto from "crypto";
 import Observable from "./util/Observable";
 
-if (process.env.NODE_ENV === "development") {
-  console.log("Development build...");
-  app.use(cors());
-} else {
-  console.log("Production build...");
-  app.use(express.static("backend/build/build"));
-  app.get("*", function (_, res) {
-    res.sendFile(path.join(__dirname, "build", "index.html"));
-  });
-}
-
 app.use(express.json());
 
 app.get("/vodinfo/:id", (req, res) => {
@@ -135,6 +124,16 @@ app.post("/openexternal", (req, res) => {
   electron.shell.openExternal(req.body.url);
   res.end();
 });
+if (process.env.NODE_ENV === "development") {
+  console.log("Development build...");
+  app.use(cors());
+} else {
+  console.log("Production build...");
+  app.use(express.static("build/build"));
+  app.get("*", function (_, res) {
+    res.sendFile(path.join(__dirname, "build", "index.html"));
+  });
+}
 
 export default (): void => {
   app.listen(PORT, () => console.log("Server is ready on " + PORT));

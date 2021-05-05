@@ -122,6 +122,7 @@ const AnalyzeVod = () => {
       })
       .catch(() => {
         setVodInfo(null);
+        setQualities([]);
       });
     const interval = setInterval(() => {
       getDownloadProgress(vodID).then(({ data }) => {
@@ -153,8 +154,11 @@ const AnalyzeVod = () => {
     <>
       <Navbar />
       <Container maxWidth={false} className={classes.container}>
-        {vodInfo === null && <ErrorVodPage />}
-        {typeof vodInfo === "object" && (
+        {vodInfo === null ? (
+          <ErrorVodPage />
+        ) : vodInfo === undefined ? (
+          <> </>
+        ) : (
           <>
             <iframe
               src={`https://player.twitch.tv/?video=v${vodID}&parent=localhost`}

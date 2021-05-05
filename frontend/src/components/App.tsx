@@ -11,17 +11,17 @@ const App = () => {
       <CssBaseline />
       <StylesProvider injectFirst>
         <Switch>
-          <Route path="/search/:vodID">
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Route exact path="/search/:vodID">
             <AnalyzeVod />
           </Route>
-          <Route path="/bookmarks">
+          <Route exact path="/bookmarks">
             <Bookmark />
           </Route>
-          <Route path="/settings">
+          <Route exact path="/settings">
             <Settings />
-          </Route>
-          <Route path="/">
-            <Home />
           </Route>
         </Switch>
       </StylesProvider>
