@@ -15,9 +15,9 @@ import {
   Grid,
 } from "@material-ui/core";
 import Navbar from "../util/Navbar";
-import { getCollections, setClips } from "../../storage/storage";
+import { getCollections, setClips } from "../../services/storage";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { getExternal } from "../../services/twitch";
+import { getExternal } from "../../services/misc";
 import React from "react";
 const useStyles = makeStyles((theme: Theme) => {
   return {

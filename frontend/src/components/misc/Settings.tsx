@@ -5,7 +5,7 @@ import {
   makeStyles,
   Theme,
 } from "@material-ui/core";
-import { getOutputPath, setOutputPath } from "../../storage/storage";
+import { getOutputPath, setOutputPath } from "../../services/storage";
 import Navbar from "../util/Navbar";
 import React from "react";
 const useStyles = makeStyles((theme: Theme) => {

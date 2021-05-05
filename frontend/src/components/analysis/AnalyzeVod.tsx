@@ -26,7 +26,7 @@ import {
   addClip,
   getSingleCollection,
   setCollectionName,
-} from "../../storage/storage";
+} from "../../services/storage";
 import { useDimensions } from "../../util/util";
 import CircularProgressWithLabel from "../util/CircularProgressWithLabel";
 import Navbar from "../util/Navbar";

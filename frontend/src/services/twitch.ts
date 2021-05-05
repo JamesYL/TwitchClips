@@ -1,4 +1,4 @@
-import { getOutputPath } from "./../storage/storage";
+import { getOutputPath } from "./storage";
 import axios from "axios";
 
 export type ImageURL = string;
@@ -30,17 +30,15 @@ export interface DownloadProgress {
   progress: number;
 }
 export const getVodInfo = async (id: string | number) => {
-  return axios.get<VodInfo>(`/vodinfo/${id}`);
+  return axios.get<VodInfo>(`/twitch/vodinfo/${id}`);
 };
-export const getExternal = async (url: string) => {
-  return axios.post(`/openexternal`, { url });
-};
+
 export const getQualities = async (id: string | number) => {
-  return axios.get<string[]>(`/vodqualities/${id}`);
+  return axios.get<string[]>(`/twitch/vodqualities/${id}`);
 };
 
 export const getDownloadProgress = async (vodID: string | number) => {
-  return axios.get<DownloadProgress[]>(`/voddownload/${vodID}`);
+  return axios.get<DownloadProgress[]>(`/twitch/voddownload/${vodID}`);
 };
 export const downloadClip = async (
   id: string | number,
@@ -49,7 +47,7 @@ export const downloadClip = async (
   filename: string,
   quality = ""
 ) => {
-  return axios.post<{ downloadID: string }>(`/voddownload`, {
+  return axios.post<{ downloadID: string }>(`/twitch/voddownload`, {
     quality,
     id,
     times: [{ startTime, endTime, filename }],

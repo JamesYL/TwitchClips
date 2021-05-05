@@ -1,9 +1,8 @@
-import axios from "axios";
-import { getVodInfo } from "../services/twitch";
+import { openFolderToChoose } from "./misc";
+import { getVodInfo } from "./twitch";
 export const setOutputPath = async () => {
   try {
-    const path = await axios.get<{ path: string }>("/output");
-    console.log(path.data);
+    const path = await openFolderToChoose();
     window.localStorage.setItem("output-path", path.data.path);
     return path.data.path;
   } catch (err) {
