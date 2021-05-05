@@ -20,8 +20,10 @@ const useStyles = makeStyles((theme: Theme) => {
 });
 const Settings = () => {
   const classes = useStyles();
-
-  const [path, setPath] = React.useState<null | string>(getOutputPath());
+  React.useEffect(() => {
+    getOutputPath().then((path) => setPath(path));
+  }, []);
+  const [path, setPath] = React.useState<null | string>(null);
   return (
     <>
       <Navbar />

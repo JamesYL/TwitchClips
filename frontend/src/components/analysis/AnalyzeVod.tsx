@@ -105,29 +105,30 @@ const AnalyzeVod = () => {
 
   React.useEffect(() => {
     getVodInfo(vodID)
-      .then(({ data }) => {
-        setVodInfo(data);
-        const collection = getSingleCollection(vodID);
+      .then((vodInfo) => {
+        setVodInfo(vodInfo);
+        setVodName(vodInfo.title);
+        return getSingleCollection(vodID);
+      })
+      .then((collection) => {
         if (collection) {
           setVodName(collection.name);
           setVodButtonClicked(true);
-        } else {
-          setVodName(data.title);
         }
         return getQualities(vodID);
       })
-      .then(({ data }) => {
-        setQualities(data);
-        setSelectedQuality(data[0]);
+      .then((qualities) => {
+        setQualities(qualities);
+        setSelectedQuality(qualities[0]);
       })
       .catch(() => {
         setVodInfo(null);
         setQualities([]);
       });
     const interval = setInterval(() => {
-      getDownloadProgress(vodID).then(({ data }) => {
+      getDownloadProgress(vodID).then((prog) => {
         const cpy: [string, number][] = [];
-        for (const item of data) {
+        for (const item of prog) {
           cpy.push([item.downloadID, item.progress]);
         }
         setProgress(cpy);
@@ -143,8 +144,8 @@ const AnalyzeVod = () => {
       clipName === null ? `${vodID}_${values[0]}s_to_${values[1]}s` : clipName,
       selectedQuality
     )
-      .then(({ data }) => {
-        setProgress([...progress, [data.downloadID, 0]]);
+      .then((downloadID) => {
+        setProgress([...progress, [downloadID, 0]]);
       })
       .catch(() => {
         setIsErr(true);

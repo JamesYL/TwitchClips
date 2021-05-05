@@ -1,8 +1,8 @@
 import axios from "axios";
 
 export const getExternal = async (url: string) => {
-  return axios.post(`/misc/openexternal`, { url });
+  return (await axios.post<void>(`/misc/openexternal`, { url })).data;
 };
-export const openFolderToChoose = () => {
-  return axios.get<{ path: string }>(`/misc/output`);
+export const openFolderToChoose = async () => {
+  return (await axios.get<string>(`/misc/output`)).data;
 };

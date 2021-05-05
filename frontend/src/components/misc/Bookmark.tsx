@@ -15,7 +15,7 @@ import {
   Grid,
 } from "@material-ui/core";
 import Navbar from "../util/Navbar";
-import { getCollections, setClips } from "../../services/storage";
+import { Collections, getCollections, setClips } from "../../services/storage";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { getExternal } from "../../services/misc";
 import React from "react";
@@ -36,7 +36,10 @@ const useStyles = makeStyles((theme: Theme) => {
 });
 const Bookmark = () => {
   const classes = useStyles();
-  const [collections, setCollections] = React.useState(getCollections());
+  const [collections, setCollections] = React.useState<Collections>({});
+  React.useEffect(() => {
+    getCollections().then((collections) => setCollections(collections));
+  }, []);
   return (
     <>
       <Navbar />

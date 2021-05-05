@@ -30,15 +30,16 @@ export interface DownloadProgress {
   progress: number;
 }
 export const getVodInfo = async (id: string | number) => {
-  return axios.get<VodInfo>(`/twitch/vodinfo/${id}`);
+  return (await axios.get<VodInfo>(`/twitch/vodinfo/${id}`)).data;
 };
 
 export const getQualities = async (id: string | number) => {
-  return axios.get<string[]>(`/twitch/vodqualities/${id}`);
+  return (await axios.get<string[]>(`/twitch/vodqualities/${id}`)).data;
 };
 
 export const getDownloadProgress = async (vodID: string | number) => {
-  return axios.get<DownloadProgress[]>(`/twitch/voddownload/${vodID}`);
+  return (await axios.get<DownloadProgress[]>(`/twitch/voddownload/${vodID}`))
+    .data;
 };
 export const downloadClip = async (
   id: string | number,
@@ -47,10 +48,12 @@ export const downloadClip = async (
   filename: string,
   quality = ""
 ) => {
-  return axios.post<{ downloadID: string }>(`/twitch/voddownload`, {
-    quality,
-    id,
-    times: [{ startTime, endTime, filename }],
-    outputFolder: getOutputPath(),
-  });
+  return (
+    await axios.post<string>(`/twitch/voddownload`, {
+      quality,
+      id,
+      times: [{ startTime, endTime, filename }],
+      outputFolder: await getOutputPath(),
+    })
+  ).data;
 };

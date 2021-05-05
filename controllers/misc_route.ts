@@ -1,8 +1,8 @@
-import express from "express";
+import express, { Router } from "express";
 import electron from "electron";
 
 const router = express.Router();
-const getRouter = () => {
+const getRouter = (): Router => {
   router.get("/output", (_, res) => {
     electron.dialog
       .showOpenDialog({
@@ -11,7 +11,7 @@ const getRouter = () => {
       })
       .then((value) => {
         if (!value.canceled) {
-          res.json({ path: value.filePaths });
+          res.json(value.filePaths[0]);
         } else {
           res.status(404).json({ message: "Cancelled dialog" });
         }

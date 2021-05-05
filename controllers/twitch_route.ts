@@ -1,11 +1,11 @@
-import express from "express";
+import express, { Router } from "express";
 import { getVodInfo, getQualities, getVideo } from "../twitch/getVod";
 import electron from "electron";
 import crypto from "crypto";
 import Observable from "../util/Observable";
 const router = express.Router();
 
-const getRouter = () => {
+const getRouter = (): Router => {
   router.get("/vodinfo/:id", (req, res) => {
     getVodInfo(req.params.id)
       .then((vodInfo) => {
@@ -75,9 +75,7 @@ const getRouter = () => {
           )
         );
       }
-      res.send({
-        downloadID,
-      });
+      res.json(downloadID);
       Promise.all(vids).then(() => observ.finish());
     } catch (err) {
       res.status(400).json({ message: "Could not get video" });
