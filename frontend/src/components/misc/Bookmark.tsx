@@ -36,7 +36,9 @@ const useStyles = makeStyles((theme: Theme) => {
 });
 const Bookmark = () => {
   const classes = useStyles();
-  const [collections, setCollections] = React.useState<Collections>({});
+  const [collections, setCollections] = React.useState<Collections | null>(
+    null
+  );
   React.useEffect(() => {
     getCollections().then((collections) => setCollections(collections));
   }, []);
@@ -44,7 +46,7 @@ const Bookmark = () => {
     <>
       <Navbar />
       <Container className={classes.container} maxWidth={false}>
-        {Object.keys(collections).length !== 0 ? (
+        {collections !== null && Object.keys(collections).length !== 0 && (
           <Grid container spacing={2} alignItems="stretch">
             {(() => {
               const cards: JSX.Element[] = [];
@@ -115,7 +117,8 @@ const Bookmark = () => {
               return cards;
             })()}
           </Grid>
-        ) : (
+        )}
+        {collections !== null && Object.keys(collections).length === 0 && (
           <Typography variant="h4" className={classes.missing}>
             No Saved VODs or Clips found
           </Typography>

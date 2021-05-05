@@ -23,13 +23,13 @@ const Settings = () => {
   React.useEffect(() => {
     getOutputPath().then((path) => setPath(path));
   }, []);
-  const [path, setPath] = React.useState<null | string>(null);
+  const [path, setPath] = React.useState<null | string>("");
   return (
     <>
       <Navbar />
       <Container className={classes.container}>
         <Typography variant="body1" className={classes.outputText}>
-          Current Output Folder: <b>{path ? path : "Downloads"}</b>
+          Current Output Folder: <b>{path === null ? "Downloads" : path}</b>
         </Typography>
         <Button
           variant="contained"
