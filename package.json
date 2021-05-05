@@ -2,16 +2,14 @@
   "name": "streamalytics",
   "version": "1.0.0",
   "description": "Download and save clips from Twitch VODs",
-  "main": "./build/main.js",
+  "main": "./backend_build/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cross-env NODE_ENV=production electron .",
-    "build": "rimraf ./build && tsc && cd ./frontend && npm run build && copyfiles build/**/* ../build",
+    "dist": "rimraf ./backend_build ./build ./release && tsc && cd ./frontend && npm run build && copyfiles build/**/* ../ && cd .. && cross-env NODE_ENV=production electron-builder --ia32",
     "front": "cd ./frontend && npm start",
     "dev": "tsc && cross-env NODE_ENV=development electron .",
     "lint": "eslint --ext .ts ./",
-    "make": "npm install && cd ./frontend && npm install",
-    "dist": "rimraf ./release && electron-builder"
+    "make": "npm install && cd ./frontend && npm install"
   },
   "author": "James Lee",
   "license": "ISC",
@@ -24,7 +22,7 @@
     },
     "win": {
       "target": [
-        "nsis-web"
+        "nsis"
       ]
     },
     "mac": {
@@ -32,7 +30,11 @@
     },
     "linux": {
       "category": "Graphics"
-    }
+    },
+    "extraResources": [
+      "build"
+    ],
+    "artifactName": "${productName}-${version}.${ext}"
   },
   "dependencies": {
     "axios": "^0.21.1",
