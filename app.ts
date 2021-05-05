@@ -1,12 +1,13 @@
 import express from "express";
 import cors from "cors";
-const PORT = process.env.PORT || 8080;
 const app = express();
 import { getVodInfo, getQualities, getVideo } from "./twitch/getVod";
 import electron from "electron";
 import path from "path";
 import crypto from "crypto";
 import Observable from "./util/Observable";
+import net from "net";
+import { BrowserWindow } from "electron";
 
 app.use(express.json());
 
@@ -134,7 +135,15 @@ if (process.env.NODE_ENV === "development") {
     res.sendFile(path.join(__dirname, "..", "..", "build", "index.html"));
   });
 }
-
-export default (): void => {
-  app.listen(PORT, () => console.log("Server is ready on " + PORT));
+export default (window: BrowserWindow): void => {
+  let port = process.env.NODE_ENV === "development" ? 8000 : 0;
+  const server = app.listen(port, () => {
+    port = (server.address() as net.AddressInfo).port;
+    console.log("Server is ready on " + port);
+    window.loadURL(
+      process.env.NODE_ENV === "development"
+        ? "http://localhost:3000"
+        : `http://localhost:${port}`
+    );
+  });
 };

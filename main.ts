@@ -1,10 +1,8 @@
 import { app, BrowserWindow } from "electron";
 import dotenv from "dotenv";
 dotenv.config();
-const PORT = process.env.PORT || 8080;
 import expressApp from "./app";
 
-expressApp();
 function createWindow() {
   const win = new BrowserWindow({
     width: 1000,
@@ -14,12 +12,7 @@ function createWindow() {
     },
   });
   if (process.env.NODE_ENV !== "development") win.removeMenu();
-
-  win.loadURL(
-    process.env.NODE_ENV === "development"
-      ? "http://localhost:3000"
-      : `http://localhost:${PORT}`
-  );
+  expressApp(win);
 }
 app.whenReady().then(createWindow);
 app.on("window-all-closed", () => {
