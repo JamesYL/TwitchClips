@@ -31,7 +31,8 @@ const ErrorVodPage = () => {
           className={classes.subtitle}
           align="center"
         >
-          The VOD you are looking for doesn't seem to exist!
+          The VOD you are looking for doesn't seem to exist! Are you sure this
+          VOD hasn't expired?
         </Typography>
       </div>
     </>
