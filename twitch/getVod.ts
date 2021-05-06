@@ -6,7 +6,6 @@ import crypto from "crypto";
 import Observable from "../util/Observable";
 import path from "path";
 import { app } from "electron";
-import log from "electron-log";
 
 const config = { headers: { "Client-ID": "kimne78kx3ncx6brgo4mv6wki5h1ko" } };
 export type ImageURL = string;
