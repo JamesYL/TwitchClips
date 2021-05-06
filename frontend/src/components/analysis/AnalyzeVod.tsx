@@ -287,7 +287,7 @@ const AnalyzeVod = () => {
                 </Typography>
               )}
               {progress.map((item) => {
-                return <CircularProgressWithLabel value={item[1] * 100} />;
+                return <CircularProgressWithLabel key={item[0]} value={item[1] * 100} />;
               })}
             </div>
           </>

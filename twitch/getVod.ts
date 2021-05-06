@@ -120,12 +120,13 @@ const combineVideoClips = (
   outputName: string,
   length: number
 ) => {
-  const ffmpeg_exe = process.platform === "darwin" ? "./ffmpeg_mac" : process.platform === "linux" ? "./ffmpeg_linux" : "./ffmpeg";
-
+  let start = "./binary";
+  if (process.env.NODE_ENV === "production") start = "../../binary";
+  const ffmpeg_exe = start + process.platform === "darwin" ? "/ffmpeg_mac" : process.platform === "linux" ? "/ffmpeg_linux" : "/ffmpeg";
   let command = `${ffmpeg_exe} -y -ss ${startCropTime} -i "concat:`;
   for (let i = startFileNum; i <= lastFileNum; i++) {
-    if (i !== lastFileNum) command += `${path}\\${i}.ts|`;
-    else command += `${path}\\${i}.ts"`;
+    if (i !== lastFileNum) command += `${path}/${i}.ts|`;
+    else command += `${path}/${i}.ts"`;
   }
   command += ` -t ${length} -c copy ${outputName}`;
   return new Promise((resolve, reject) => {
@@ -224,8 +225,8 @@ export const getVideo = async (
     await Promise.all(promises);
     // Getting the final video file name
     const videoFileName = fileName
-      ? `"${outputPath}\\${fileName}.mp4"`
-      : `"${outputPath}\\${crypto.randomBytes(20).toString("hex")}.mp4"`;
+      ? `"${outputPath}/${fileName}.mp4"`
+      : `"${outputPath}/${crypto.randomBytes(20).toString("hex")}.mp4"`;
     await combineVideoClips(
       path,
       startCropTime,

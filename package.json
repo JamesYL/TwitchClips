@@ -32,7 +32,8 @@
       "category": "Graphics"
     },
     "extraResources": [
-      "build"
+      "build",
+      "binary"
     ],
     "artifactName": "${productName}-${version}.${ext}"
   },
