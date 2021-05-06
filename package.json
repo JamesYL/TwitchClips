@@ -5,7 +5,7 @@
   "main": "./backend_build/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dist": "rimraf ./backend_build ./build ./release && tsc && cd ./frontend && npm run build && copyfiles build/**/* ../ && cd .. && cross-env NODE_ENV=production electron-builder --ia32",
+    "dist": "rimraf ./backend_build ./build ./release && tsc && cd ./frontend && npm run build && copyfiles \"build/**/*\" ../ && cd .. && cross-env NODE_ENV=production electron-builder",
     "front": "cd ./frontend && npm start",
     "dev": "tsc && cross-env NODE_ENV=development electron .",
     "lint": "eslint --ext .ts ./",

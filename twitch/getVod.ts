@@ -120,7 +120,9 @@ const combineVideoClips = (
   outputName: string,
   length: number
 ) => {
-  let command = `ffmpeg -y -ss ${startCropTime} -i "concat:`;
+  const ffmpeg_exe = process.platform === "darwin" ? "./ffmpeg_mac" : process.platform === "linux" ? "./ffmpeg_linux" : "./ffmpeg";
+
+  let command = `${ffmpeg_exe} -y -ss ${startCropTime} -i "concat:`;
   for (let i = startFileNum; i <= lastFileNum; i++) {
     if (i !== lastFileNum) command += `${path}\\${i}.ts|`;
     else command += `${path}\\${i}.ts"`;
