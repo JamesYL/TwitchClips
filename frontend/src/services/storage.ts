@@ -45,3 +45,6 @@ export const addClip = async (id: string, clip: Clip) => {
 export const setClips = async (id: string, clips: Clip[]) => {
   axios.post(`/storage/collections/${id}`, { clips });
 };
+export const deleteCollection = (id: string) => {
+  axios.delete(`/storage/collections/${id}`);
+};

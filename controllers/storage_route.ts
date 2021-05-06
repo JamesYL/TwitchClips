@@ -53,6 +53,15 @@ const getRouter = (): Router => {
     storage.set("collections", collections, null);
     res.end();
   });
+  router.delete("/collections/:id", async (req, res) => {
+    const collections = storage.getSync("collections");
+    const id = req.params.id;
+    if (id in collections) {
+      delete collections[id];
+      storage.set("collections", collections, null);
+    }
+    res.end();
+  });
 
   return router;
 };

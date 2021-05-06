@@ -13,9 +13,16 @@ import {
   Theme,
   makeStyles,
   Grid,
+  CardActions,
+  Button,
 } from "@material-ui/core";
 import Navbar from "../util/Navbar";
-import { Collections, getCollections, setClips } from "../../services/storage";
+import {
+  Collections,
+  deleteCollection,
+  getCollections,
+  setClips,
+} from "../../services/storage";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { getExternal } from "../../services/misc";
 import React from "react";
@@ -59,6 +66,7 @@ const Bookmark = () => {
                         <Typography variant="h6">
                           <Link href={`/search/${id}`}>{curr.name}</Link>
                         </Typography>
+
                         <List>
                           {curr.clips.map(
                             (
@@ -110,6 +118,20 @@ const Bookmark = () => {
                           )}
                         </List>
                       </CardContent>
+                      <CardActions>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => {
+                            deleteCollection(id);
+                            const cpy = { ...collections };
+                            delete cpy[id];
+                            setCollections(cpy);
+                          }}
+                        >
+                          Delete Collection
+                        </Button>
+                      </CardActions>
                     </Card>
                   </Grid>
                 );
