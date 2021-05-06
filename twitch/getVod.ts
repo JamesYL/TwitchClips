@@ -4,6 +4,10 @@ import tmp from "tmp";
 import { exec } from "child_process";
 import crypto from "crypto";
 import Observable from "../util/Observable";
+import path from "path";
+import { app } from "electron";
+import log from "electron-log";
+
 const config = { headers: { "Client-ID": "kimne78kx3ncx6brgo4mv6wki5h1ko" } };
 export type ImageURL = string;
 export type DateString = string;
@@ -113,22 +117,39 @@ const getVideoClip = async (url: string, newFilePath: string) => {
   });
 };
 const combineVideoClips = (
-  path: string,
+  videoPath: string,
   startCropTime: number,
   startFileNum: number,
   lastFileNum: number,
   outputName: string,
   length: number
 ) => {
-  let start = "./binary";
-  if (process.env.NODE_ENV === "production") start = "../../binary";
-  const ffmpeg_exe = start + process.platform === "darwin" ? "/ffmpeg_mac" : process.platform === "linux" ? "/ffmpeg_linux" : "/ffmpeg";
-  let command = `${ffmpeg_exe} -y -ss ${startCropTime} -i "concat:`;
+  let ffmpeg_exe = path.join(
+    app.getAppPath(),
+    "binary",
+    process.platform === "darwin"
+      ? "/ffmpeg_mac"
+      : process.platform === "linux"
+      ? "/ffmpeg_linux"
+      : "/ffmpeg.exe"
+  );
+  if (process.env.NODE_ENV !== "development")
+    ffmpeg_exe = path.join(
+      process.resourcesPath,
+      "binary",
+      process.platform === "darwin"
+        ? "/ffmpeg_mac"
+        : process.platform === "linux"
+        ? "/ffmpeg_linux"
+        : "/ffmpeg.exe"
+    );
+
+  let command = `"${ffmpeg_exe}" -y -ss ${startCropTime} -i "concat:`;
   for (let i = startFileNum; i <= lastFileNum; i++) {
-    if (i !== lastFileNum) command += `${path}/${i}.ts|`;
-    else command += `${path}/${i}.ts"`;
+    if (i !== lastFileNum) command += `${path.join(videoPath, `${i}.ts`)}|`;
+    else command += `${path.join(videoPath, `${i}.ts`)}"`;
   }
-  command += ` -t ${length} -c copy ${outputName}`;
+  command += ` -t ${length} -c copy "${outputName}"`;
   return new Promise((resolve, reject) => {
     exec(command, (err) => {
       if (err) reject(err);
@@ -208,14 +229,12 @@ export const getVideo = async (
   if (playlistInfo) {
     const { info, startCropTime, length } = playlistInfo;
     const tmpobj = tmp.dirSync({ unsafeCleanup: true });
-    const path = tmpobj.name;
-
     const promises = [];
     for (const item of info) {
       const { name, fileIndex, partLength } = item;
       const clip = getVideoClip(
         `${baseUrl}/${name}`,
-        `${path}/${fileIndex}.ts`
+        `${tmpobj.name}/${fileIndex}.ts`
       );
       promises.push(clip);
       clip.then(() => {
@@ -225,10 +244,10 @@ export const getVideo = async (
     await Promise.all(promises);
     // Getting the final video file name
     const videoFileName = fileName
-      ? `"${outputPath}/${fileName}.mp4"`
-      : `"${outputPath}/${crypto.randomBytes(20).toString("hex")}.mp4"`;
+      ? path.join(outputPath, `${fileName}.mp4`)
+      : path.join(outputPath, `${crypto.randomBytes(20).toString("hex")}.mp4`);
     await combineVideoClips(
-      path,
+      tmpobj.name,
       startCropTime,
       info[0].fileIndex,
       info[info.length - 1].fileIndex,

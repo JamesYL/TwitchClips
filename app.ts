@@ -18,9 +18,9 @@ if (process.env.NODE_ENV === "development") {
   app.use(cors());
 } else {
   console.log("Production build...");
-  app.use(express.static(path.join(__dirname, "..", "..", "build")));
+  app.use(express.static(path.join(process.resourcesPath, "build")));
   app.get("*", function (_, res) {
-    res.sendFile(path.join(__dirname, "..", "..", "build", "index.html"));
+    res.sendFile(path.join(process.resourcesPath, "build", "index.html"));
   });
 }
 export default (window: BrowserWindow): void => {
